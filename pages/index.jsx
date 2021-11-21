@@ -1,8 +1,9 @@
+import Presente from "../components/Presente";
 
 export default function Home() {
   return (
-    <div className={styles.container}>
-
+    <div>
+      <Presente/>
     </div>
   )
 }
