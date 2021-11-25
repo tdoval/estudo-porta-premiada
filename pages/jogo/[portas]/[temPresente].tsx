@@ -1,4 +1,4 @@
-import styles from "../../../styles/jogo.module.css"
+import styles from "../../../styles/Jogo.module.css"
 import { useState, useEffect } from "react";
 import Porta from "../../../components/Porta";
 import Presente from "../../../components/Presente";
@@ -6,11 +6,28 @@ import { atualizarPortas, criarPortas } from "../../../functions/portas"
 import Link from "next/link"
 import { useRouter } from "next/router"
 
-export default function jogo() {
+export default function Jogo() {
   const router = useRouter()
 
+    const [valido, setValido] = useState(false)
     const [portas, setPortas] = useState([])
 
+    /**
+     * Validação se jogo inicia de forma válida
+     */
+    useEffect(() => {
+      const portas = +router.query.portas
+      const temPresente = +router.query.temPresente
+
+      const qtdePortasValida = portas >= 3 && portas <= 100
+      const temPresenteValido = temPresente >=1 && temPresente <= portas
+
+      setValido(qtdePortasValida && temPresenteValido)
+    }, [portas, router.query.portas, router.query.temPresente])
+
+    /**
+     * Pega portas e presente pela URL
+     */
     useEffect(() => {
       const portas = +router.query.portas
       const temPresente = +router.query.temPresente
@@ -31,10 +48,13 @@ export default function jogo() {
     return (
         <div id={styles.jogo}>
             <div className={styles.portas}>
-            {renderizarPortas()}
+            {valido ?
+              renderizarPortas() :
+              <h1>Valores inválidos</h1>
+            }
             </div>
             <div className={styles.botoes}>
-                <Link href="/">
+                <Link href="/" passHref>
                     <button>Reiniciar jogo</button>
                 </Link>
             </div>
